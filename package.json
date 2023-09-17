@@ -1,0 +1,16 @@
+{
+  "name": "bigpay-trains",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/app.ts"
+  },
+  "devDependencies": {
+    "@types/p5": "^1.7.0",
+    "bun-types": "latest"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "p5": "^1.7.0"
+  }
+}
