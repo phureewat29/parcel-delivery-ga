@@ -13,6 +13,7 @@ export class Population {
 
   // GA Data
   possibleActions: Action[] = [];
+  maxGenesLength: number
   trains: Train[]
   parcels: Parcel[]
   graph = Graph()
@@ -27,16 +28,17 @@ export class Population {
     parcels: Parcel[]
   ) {
     this.populationSize = populationSize
-    this.tournamentSize = mutationRate
-    this.mutationRate = tournamentSize
+    this.tournamentSize = tournamentSize
+    this.mutationRate = mutationRate
     this.trains = trains
     this.parcels = parcels
+    this.maxGenesLength = Math.max(2, trains.length * parcels.length)
 
     this.buildGraph(nodes, edges)
     this.generatePossibleActions()
 
     for (let i = 0; i < populationSize; i++) {
-      const randomSolution = Member.generateRandomSolution(this.possibleActions, this.parcels.length * this.trains.length)
+      const randomSolution = Member.generateRandomSolution(this.possibleActions, this.maxGenesLength)
       this.population.push(randomSolution)
     }
   }
@@ -74,7 +76,7 @@ export class Population {
       child.mutate(this.mutationRate)
       newPopulation.push(child)
     }
-    this.population = [...newPopulation]
+    this.population = [...newPopulation, ...this.population].sort((memberA, memberB) => memberA.fitness - memberB.fitness).slice(0, this.populationSize)
     this.generations++
   }
 
@@ -89,11 +91,12 @@ export class Population {
 
   crossOver(parentA: Member, parentB: Member): Member {
     const point = _.random(2, parentA.actions.length - 2)
-    const child = parentA.actions.slice(0, point)
+    let child = parentA.actions.slice(0, point)
     for (let i = 0; i < parentB.actions.length; i++) {
       const action = parentB.actions[i]
       if (!child.includes(action)) child.push(action);
     }
+    child = child.slice(0, this.maxGenesLength)
     return new Member(child)
   }
 

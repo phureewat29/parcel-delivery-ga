@@ -1,8 +1,9 @@
 {
-  "name": "bigpay-trains",
+  "name": "parcel-delivery-ga",
   "module": "index.ts",
   "type": "module",
   "scripts": {
+    "start": "bun run src/app.ts",
     "dev": "bun --watch src/app.ts"
   },
   "devDependencies": {
