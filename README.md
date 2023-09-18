@@ -1,15 +1,58 @@
-# bigpay-trains
+# Parcel Delivery using Genetic Algorithm
 
-To install dependencies:
+This project provides a solution for the optimization of parcel delivery using trains. It's based on a Genetic Algorithm (GA) which evolves over generations to find the most efficient sequence of actions (loading and unloading) for each train, ensuring the parcels reach their destinations with minimal cost.
 
-```bash
+
+## Overview
+
+The project is structured around the following main components:
+
+- **Nodes**: These represent locations where trains and parcels can be.
+- **Edges**: Represent the routes between two nodes and their associated distance.
+- **Trains**: Have capacities and are located at nodes.
+- **Parcels**: Have weights and are associated with source and destination nodes.
+- **Actions**: Represent loading or unloading of a parcel onto a train.
+
+The GA creates populations of solutions (members), and through selection, crossover, and mutation operations, improves the population towards optimal or near-optimal solutions.
+
+## Installation
+### Install dependencies
+To install project dependencies, use the following command:
+```
 bun install
 ```
 
-To run:
+## Running the Project
+### Start the Project
+To run the project and view the results, use the following command:
 
-```bash
-bun run index.ts
 ```
+bun start
+```
+This command initializes the project and runs the Genetic Algorithm to find and display the optimized solution.
 
-This project was created using `bun init` in bun v1.0.2. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+### Development Mode
+If you're looking to make changes and want to watch the project for any changes you make, use the following command:
+```
+bun dev
+```
+This will keep the project running and will reflect any changes made instantly.
+
+## How It Works
+The GA uses a population of potential solutions (members). Each member in the population is a sequence of actions representing the loading and unloading of parcels by trains. The GA evolves this population over generations.
+
+1. Initialization: A population of random solutions is generated.
+2. Selection: Some of the best-performing solutions are chosen to be parents to produce the members of the next generation.
+3. Crossover (Reproduction): Pairs of parents are selected based on their fitness. They produce a "child" solution by combining their sequences of actions.
+4. Mutation: To maintain diversity in the population and prevent premature convergence, occasional changes are made to the members.
+5. Evaluation: Each member's sequence of actions is evaluated based on its total distance traveled and whether it violates any constraints like overloading the train.
+6. This process is repeated for a set number of generations or until a satisfactory solution is found.
+
+## Project Structure
+* `app.ts`: This is the main entry point that initializes the data and runs the GA.
+* `population.ts`: Defines the Population class, which represents a collection of potential solutions and contains methods to evolve the population over generations.
+* `member.ts`: Defines a Member class, representing a single potential solution.
+* `types.ts`: Contains type definitions and interfaces used throughout the project.
+
+## License
+MIT
