@@ -1,5 +1,5 @@
 import { Node, Edge, Train, Parcel, Action, ActionType } from './types'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { Member } from './member';
 import Graph from 'graph-data-structure'
 

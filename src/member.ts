@@ -1,4 +1,4 @@
-import _, { random } from "lodash";
+import _ from "lodash";
 import { Action, ActionType, Parcel, Train } from "./types";
 
 export class Member {

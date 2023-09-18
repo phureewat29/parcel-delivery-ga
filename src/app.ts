@@ -1,9 +1,9 @@
 import { Node, Edge, Train, Parcel } from './types'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { Population } from './population'
 import { Member } from './member'
 
-// Initialize the population
+// Initialize simple problem
 // const N1 = { name: 'N1' }
 // const N2 = { name: 'N2' }
 // const N3 = { name: 'N3' }
@@ -19,6 +19,7 @@ import { Member } from './member'
 // const P1 = { name: 'P1', weight: 5, at: N1, dest: N3 }
 // const parcels: Parcel[] = [P1]
 
+// Initialize complex problem
 const N1 = { name: 'N1' }
 const N2 = { name: 'N2' }
 const N3 = { name: 'N3' }
@@ -33,13 +34,13 @@ const E4 = { name: 'E4', from: N4, to: N5, distance: 10 }
 const edges: Edge[] = [E1, E2, E3, E4]
 
 const T1 = { name: 'T1', capacity: 20, at: N2 }
-const T2 = { name: 'T2', capacity: 20, at: N5 }
+const T2 = { name: 'T2', capacity: 10, at: N5 }
 const trains: Train[] = [T1, T2]
 
-const P1 = { name: 'P1', weight: 5, at: N2, dest: N3 }
-const P2 = { name: 'P2', weight: 5, at: N2, dest: N3 }
-const P3 = { name: 'P3', weight: 5, at: N5, dest: N4 }
-const P4 = { name: 'P4', weight: 5, at: N5, dest: N4 }
+const P1 = { name: 'P1', weight: 10, at: N1, dest: N3 }
+const P2 = { name: 'P2', weight: 10, at: N2, dest: N3 }
+const P3 = { name: 'P3', weight: 10, at: N3, dest: N5 }
+const P4 = { name: 'P4', weight: 10, at: N4, dest: N1 }
 const parcels: Parcel[] = [P1, P2, P3, P4]
 
 
