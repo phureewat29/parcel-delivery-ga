@@ -46,41 +46,32 @@ export class Member {
   }
 
   static calcTrainRouteOverload(actions: Action[], maxCapacity: number): number {
-    let overload = 0
-
-    // check load/unload completeness
-    const loads = actions
-      .filter(action => action.type === ActionType.LOAD)
-      .map(action => action.parcel.name)
-    const unloads = actions
-      .filter(action => action.type === ActionType.UNLOAD)
-      .map(action => action.parcel.name)
-    const leftover = loads.filter(load => !unloads.includes(load))
-    overload += leftover.length
-
     // check capacity overload
+    let overload = 0
     let currentWeight = 0;
+    let parcelStorage: string[] = [];
     for (let i = 0; i < actions.length; i++) {
       if (actions[i].type === ActionType.LOAD) {
         currentWeight += actions[i].parcel.weight
+        parcelStorage.push(actions[i].parcel.name)
       } else {
         currentWeight -= actions[i].parcel.weight
+        if (parcelStorage.includes(actions[i].parcel.name)) parcelStorage.splice(parcelStorage.indexOf(actions[i].parcel.name), 1)
       }
       if (currentWeight < 0 || currentWeight > maxCapacity) overload++
     }
 
+    overload += parcelStorage.length
     return overload
   }
 
-  mutate(mutationRate: number) {
-    if (this.actions.length == 1) return
-
+  mutate(mutationRate: number, possibleActions: Action[]) {
     // Mutatation utils
-    const swapGenes = (genes: Action[], a: number, b: number) => {
-      const temp = genes[b]
-      genes[b] = genes[a]
-      genes[a] = temp
-      return genes
+    const swapActions = (actions: Action[], a: number, b: number) => {
+      const temp = actions[b]
+      actions[b] = actions[a]
+      actions[a] = temp
+      return actions
     }
 
     const getRandomIndexes = (max: number): [number, number] => {
@@ -90,19 +81,26 @@ export class Member {
       return [indexA, indexB]
     }
 
+    // Swap with another posible action
+    if (Math.random() < mutationRate) {
+      const indexA = Math.floor(Math.random() * this.actions.length);
+      this.actions[indexA] = _.find(possibleActions, action => !this.actions.includes(action)) || this.actions[indexA]
+      return
+    }
+
     // Swap two adjacent points
     if (Math.random() < mutationRate) {
       const indexA = Math.floor(Math.random() * this.actions.length);
       let indexB = indexA + 1;
       if (indexB >= this.actions.length) indexB = indexA - 1;
-      this.actions = swapGenes(this.actions, indexA, indexB)
+      this.actions = swapActions(this.actions, indexA, indexB)
       return
     }
 
     // Swap two random points (swap mutation)
     if (Math.random() < mutationRate) {
       const [indexA, indexB] = getRandomIndexes(this.actions.length);
-      this.actions = swapGenes(this.actions, indexA, indexB)
+      this.actions = swapActions(this.actions, indexA, indexB)
       return
     }
   }
@@ -111,26 +109,27 @@ export class Member {
    * Print out the moves solution to console
    */
   printSolution(trains: Train[], graph: any) {
-    const trainActions = _.groupBy(this.actions, 'train.name')
-
-    _.map(trainActions, (actions, trainName) => {
-      let currentWeight = 0
-      const train = _.find(trains, { name: trainName })
-      console.log(`\nTRAIN: ${train?.name} at ${train?.at.name}`)
-      let currentNode = train?.at.name
-      actions.map(action => {
-        let isLoad = action.type === ActionType.LOAD
-        let dest = isLoad ? action.parcel.at.name : action.parcel.dest.name
-        const nodes = graph.shortestPath(currentNode, dest)
-        for (let i = 1; i < nodes.length; i++) {
-          const node = nodes[i]
-          const cost = graph.getEdgeWeight(currentNode, node)
-          console.log(`move ${currentNode} -> ${node} takes ${cost} minutes`)
-          currentNode = node
-        }
-        currentWeight = isLoad ? currentWeight + action.parcel.weight : currentWeight - action.parcel.weight
-        console.log(`${isLoad ? 'load' : 'unload'} ${action.parcel.name} weight ${action.parcel.weight} kgs (capacity ${currentWeight}/${train?.capacity} kgs)`)
+    _(this.actions)
+      .groupBy('train.name')
+      .map((actions, trainName) => {
+        let currentWeight = 0
+        const train = _.find(trains, { name: trainName })
+        console.log(`\nTRAIN: ${train?.name} at ${train?.at.name}`)
+        let currentNode = train?.at.name
+        actions.map(action => {
+          let isLoad = action.type === ActionType.LOAD
+          let dest = isLoad ? action.parcel.at.name : action.parcel.dest.name
+          const nodes = graph.shortestPath(currentNode, dest)
+          for (let i = 1; i < nodes.length; i++) {
+            const node = nodes[i]
+            const cost = graph.getEdgeWeight(currentNode, node)
+            console.log(`move ${currentNode} -> ${node} takes ${cost} minutes`)
+            currentNode = node
+          }
+          currentWeight = isLoad ? currentWeight + action.parcel.weight : currentWeight - action.parcel.weight
+          console.log(`${isLoad ? 'load' : 'unload'} ${action.parcel.name} weight ${action.parcel.weight} kgs (capacity ${currentWeight}/${train?.capacity} kgs)`)
+        })
       })
-    })
+      .value()
   }
 }

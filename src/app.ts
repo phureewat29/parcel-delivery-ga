@@ -46,8 +46,8 @@ const parcels: Parcel[] = [P1, P2, P3, P4]
 
 // GA Settings
 const populationSize = 10000
-const tournamentSize = 10
-const mutationRate = 0.2
+const tournamentSize = 2
+const mutationRate = 0.25
 const maxGenerations = 100
 
 let bestMember = new Member([])
@@ -63,7 +63,7 @@ while (population.generations < maxGenerations) {
   const bestMemberOfGeneration = population.getBestMemberOfGeneration()
   if (bestMemberOfGeneration.fitness < bestMember.fitness) bestMember = bestMemberOfGeneration
 
-  console.log(`GENERATION: ${population.generations}, BEST OF GENERATION: ${bestMemberOfGeneration.fitness}, CURRENT BEST: ${bestMember.fitness}`)
+  console.log(`GENERATION: ${population.generations}, BEST OF GENERATION: ${bestMemberOfGeneration.fitness}, ALL TIME BEST: ${bestMember.fitness}`)
 }
 
 bestMember.printSolution(population.trains, population.graph)

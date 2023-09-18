@@ -73,7 +73,7 @@ export class Population {
       const parentA = this.tournamentSelection()
       const parentB = this.tournamentSelection()
       let child = this.crossOver(parentA, parentB)
-      child.mutate(this.mutationRate)
+      child.mutate(this.mutationRate, this.possibleActions)
       newPopulation.push(child)
     }
     this.population = [...newPopulation, ...this.population].sort((memberA, memberB) => memberA.fitness - memberB.fitness).slice(0, this.populationSize)
@@ -90,11 +90,11 @@ export class Population {
   }
 
   crossOver(parentA: Member, parentB: Member): Member {
-    const point = _.random(2, parentA.actions.length - 2)
+    const point = _.random(2, this.maxGenesLength - 2)
     let child = parentA.actions.slice(0, point)
     for (let i = 0; i < parentB.actions.length; i++) {
       const action = parentB.actions[i]
-      if (!child.includes(action)) child.push(action);
+      if (!child.includes(action)) child.push(action)
     }
     child = child.slice(0, this.maxGenesLength)
     return new Member(child)
