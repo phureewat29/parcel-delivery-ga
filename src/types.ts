@@ -12,7 +12,6 @@ export interface Train {
   name: string;
   capacity: number;
   at: Node;
-  load: Parcel[];
 }
 
 export interface Parcel {
@@ -22,9 +21,13 @@ export interface Parcel {
   dest: Node;
 }
 
-export interface Move {
-  train: Train;
-  from: Node;
-  to: Node;
-  distance: number;
+export enum ActionType {
+  LOAD = "LOAD",
+  UNLOAD = "UNLOAD"
+}
+
+export interface Action {
+  type: ActionType;
+  parcel: Parcel,
+  train: Train
 }
