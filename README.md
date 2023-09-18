@@ -5,7 +5,7 @@ This project provides a solution for solving the train's delivery code challenge
 ![big-train-demo](https://github.com/phureewat29/parcel-delivery-ga/assets/2357480/588a35ee-e9ef-4b5a-b548-e0771a5d18ed)
 
 ## Solve Simple Problem
-### Input (Simple)
+**Input (Simple)**
 ```
 const N1 = { name: 'N1' }
 const N2 = { name: 'N2' }
@@ -23,7 +23,7 @@ const P1 = { name: 'P1', weight: 5, at: N1, dest: N3 }
 const parcels: Parcel[] = [P1]
 ```
 
-### Output (Simple)
+**Output (Simple)**
 ```
 TRAIN: T1 at N2
 move N2 -> N1 takes 30 minutes
@@ -32,9 +32,9 @@ move N1 -> N2 takes 30 minutes
 move N2 -> N3 takes 10 minutes
 unload P1 weight 5 kgs (capacity 0/5 kgs)
 ```
-### Solving Complex Problem
+## Solve Complex Problem
 
-### Input (Complex)
+**Input (Complex)**
 ```
 const N1 = { name: 'N1' }
 const N2 = { name: 'N2' }
@@ -60,7 +60,7 @@ const P4 = { name: 'P4', weight: 10, at: N4, dest: N1 }
 const parcels: Parcel[] = [P1, P2, P3, P4]
 ```
 
-### Output (Complex)
+**Output (Complex)**
 ```
 TRAIN: T2 at N5
 move N5 -> N4 takes 10 minutes
@@ -95,7 +95,7 @@ The project is structured around the following main components:
 - **Nodes**: These represent locations where trains and parcels can be.
 - **Edges**: Represent the routes between two nodes and their associated distance.
 - **Trains**: Have capacities and are located at nodes.
-- **Parcels**: Have weights and are associated with source and destination nodes.
+- **Parcels (Packages)**: Have weights and are associated with source and destination nodes.
 - **Actions**: Represent the action state of LOAD or UNLOAD parcel from/onto a train.
 
 The GA creates populations of solutions (members), and through selection, crossover, and mutation operations, improves the population towards optimal or near-optimal solutions.
