@@ -4,6 +4,15 @@ This project provides a solution for solving the train's delivery code challenge
 
 ![big-train-demo](https://github.com/phureewat29/parcel-delivery-ga/assets/2357480/588a35ee-e9ef-4b5a-b548-e0771a5d18ed)
 
+### Output
+```
+TRAIN: T1 at N2
+move N2 -> N1 takes 30 minutes
+load P1 weight 5 kgs (capacity 5/5 kgs)
+move N1 -> N2 takes 30 minutes
+move N2 -> N3 takes 10 minutes
+unload P1 weight 5 kgs (capacity 0/5 kgs)
+```
 
 ## Overview
 
