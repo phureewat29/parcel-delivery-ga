@@ -5,7 +5,7 @@ This project provides a solution for solving the train's delivery code challenge
 ![big-train-demo](https://github.com/phureewat29/parcel-delivery-ga/assets/2357480/588a35ee-e9ef-4b5a-b548-e0771a5d18ed)
 
 ## Solve Simple Problem
-### Input
+### Input (Simple)
 ```
 const N1 = { name: 'N1' }
 const N2 = { name: 'N2' }
@@ -23,7 +23,7 @@ const P1 = { name: 'P1', weight: 5, at: N1, dest: N3 }
 const parcels: Parcel[] = [P1]
 ```
 
-### OUTPUT
+### Output (Simple)
 ```
 TRAIN: T1 at N2
 move N2 -> N1 takes 30 minutes
@@ -34,7 +34,7 @@ unload P1 weight 5 kgs (capacity 0/5 kgs)
 ```
 ### Solving Complex Problem
 
-### Input
+### Input (Complex)
 ```
 const N1 = { name: 'N1' }
 const N2 = { name: 'N2' }
@@ -60,7 +60,7 @@ const P4 = { name: 'P4', weight: 10, at: N4, dest: N1 }
 const parcels: Parcel[] = [P1, P2, P3, P4]
 ```
 
-### OUTPUT
+### Output (Complex)
 ```
 TRAIN: T1 at N2
 load P2 weight 10 kgs (capacity 10/20 kgs)
