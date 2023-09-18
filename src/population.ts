@@ -44,7 +44,6 @@ export class Population {
   }
 
   buildGraph(nodes: Node[], edges: Edge[]) {
-    // bi-directional graph
     nodes.forEach(node => this.graph.addNode(node.name))
     edges.forEach(edge => {
       this.graph.addEdge(edge.from.name, edge.to.name, edge.distance)

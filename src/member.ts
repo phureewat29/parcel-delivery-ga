@@ -45,8 +45,10 @@ export class Member {
     return distance
   }
 
+  /**
+   * Penalty the overload and impossible parcels delivery
+   */
   static calcTrainRouteOverload(actions: Action[], maxCapacity: number): number {
-    // check capacity overload
     let overload = 0
     let currentWeight = 0;
     let parcelStorage: string[] = [];
@@ -109,27 +111,24 @@ export class Member {
    * Print out the moves solution to console
    */
   printSolution(trains: Train[], graph: any) {
-    _(this.actions)
-      .groupBy('train.name')
-      .map((actions, trainName) => {
-        let currentWeight = 0
-        const train = _.find(trains, { name: trainName })
-        console.log(`\nTRAIN: ${train?.name} at ${train?.at.name}`)
-        let currentNode = train?.at.name
-        actions.map(action => {
-          let isLoad = action.type === ActionType.LOAD
-          let dest = isLoad ? action.parcel.at.name : action.parcel.dest.name
-          const nodes = graph.shortestPath(currentNode, dest)
-          for (let i = 1; i < nodes.length; i++) {
-            const node = nodes[i]
-            const cost = graph.getEdgeWeight(currentNode, node)
-            console.log(`move ${currentNode} -> ${node} takes ${cost} minutes`)
-            currentNode = node
-          }
-          currentWeight = isLoad ? currentWeight + action.parcel.weight : currentWeight - action.parcel.weight
-          console.log(`${isLoad ? 'load' : 'unload'} ${action.parcel.name} weight ${action.parcel.weight} kgs (capacity ${currentWeight}/${train?.capacity} kgs)`)
-        })
+    _(this.actions).groupBy('train.name').map((actions, trainName) => {
+      let currentWeight = 0
+      const train = _.find(trains, { name: trainName })
+      console.log(`\nTRAIN: ${train?.name} at ${train?.at.name}`)
+      let currentNode = train?.at.name
+      _.map(actions, action => {
+        let isLoad = action.type === ActionType.LOAD
+        let dest = isLoad ? action.parcel.at.name : action.parcel.dest.name
+        const nodes = graph.shortestPath(currentNode, dest)
+        for (let i = 1; i < nodes.length; i++) {
+          const node = nodes[i]
+          const cost = graph.getEdgeWeight(currentNode, node)
+          console.log(`move ${currentNode} -> ${node} takes ${cost} minutes`)
+          currentNode = node
+        }
+        currentWeight = isLoad ? currentWeight + action.parcel.weight : currentWeight - action.parcel.weight
+        console.log(`${isLoad ? 'load' : 'unload'} ${action.parcel.name} weight ${action.parcel.weight} kgs (capacity ${currentWeight}/${train?.capacity} kgs)`)
       })
-      .value()
+    }).value()
   }
 }
