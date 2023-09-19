@@ -1,6 +1,6 @@
 # Parcel Delivery using Genetic Algorithm
 
-This project addresses a complex optimization problem that is closely related to well-known NP-hard problems. It integrates elements from both TSP and VRP, with additional constraints and objectives unique to our domain. 
+This project addresses a complex optimization problem that is closely related to well-known NP-hard problems. It integrates elements from both TSP and VRP, with additional constraints and objectives unique to our domain.
 
 The solution is based on a Genetic Algorithm (GA) which evolves over generations to find the most efficient sequence of actions for each parcel and train, ensuring the parcels reach their destinations with possible minimal cost.
 
@@ -66,30 +66,26 @@ const parcels: Parcel[] = [P1, P2, P3, P4]
 **Output (Complex)**
 ```
 TRAIN: T2 at N1
-move N1 -> N2 takes 30 minutes
-load P2 weight 10 kgs (capacity 10/10 kgs)
-move N2 -> N3 takes 10 minutes
-unload P2 weight 10 kgs (capacity 0/10 kgs)
-move N3 -> N2 takes 10 minutes
-move N2 -> N1 takes 30 minutes
 load P1 weight 10 kgs (capacity 10/10 kgs)
 move N1 -> N2 takes 30 minutes
 move N2 -> N3 takes 10 minutes
 unload P1 weight 10 kgs (capacity 0/10 kgs)
-move N3 -> N4 takes 50 minutes
-load P4 weight 10 kgs (capacity 10/10 kgs)
-move N4 -> N3 takes 50 minutes
 move N3 -> N2 takes 10 minutes
-move N2 -> N1 takes 30 minutes
-unload P4 weight 10 kgs (capacity 0/10 kgs)
+load P2 weight 10 kgs (capacity 10/10 kgs)
+move N2 -> N3 takes 10 minutes
+unload P2 weight 10 kgs (capacity 0/10 kgs)
+load P3 weight 10 kgs (capacity 10/10 kgs)
+move N3 -> N4 takes 50 minutes
+move N4 -> N5 takes 10 minutes
+unload P3 weight 10 kgs (capacity 0/10 kgs)
 
 TRAIN: T3 at N5
 move N5 -> N4 takes 10 minutes
+load P4 weight 10 kgs (capacity 10/15 kgs)
 move N4 -> N3 takes 50 minutes
-load P3 weight 10 kgs (capacity 10/15 kgs)
-move N3 -> N4 takes 50 minutes
-move N4 -> N5 takes 10 minutes
-unload P3 weight 10 kgs (capacity 0/15 kgs)
+move N3 -> N2 takes 10 minutes
+move N2 -> N1 takes 30 minutes
+unload P4 weight 10 kgs (capacity 0/15 kgs)
 ```
 
 ## Overview
