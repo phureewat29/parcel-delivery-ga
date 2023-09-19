@@ -2,7 +2,7 @@
 
 This project provides a solution for solving the train's delivery code challenge. The solution is based on a Genetic Algorithm (GA) which evolves over generations to find the most efficient sequence of actions (LOAD and UNLOAD) for each train, ensuring the parcels reach their destinations with minimal cost.
 
-![big-train-demo](https://github.com/phureewat29/parcel-delivery-ga/assets/2357480/588a35ee-e9ef-4b5a-b548-e0771a5d18ed)
+![parcel-ga](https://github.com/phureewat29/parcel-delivery-ga/assets/2357480/ad2c5726-32aa-49ba-a6a3-c34a8e1719e3)
 
 ## Solve Simple Problem
 **Input (Simple)**
