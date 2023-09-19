@@ -49,11 +49,12 @@ export class Member {
 
   static calcRouteFitness(actions: Action[], graph: any): number {
     let distance: number = 0
-    let trainStartPoint = actions[0].train.at.name
+    let currentAt = actions[0].train.at.name
 
     for (let i = 0; i < actions.length; i++) {
       const dest = actions[i].type === ActionType.LOAD ? actions[i].parcel.at : actions[i].parcel.dest
-      distance += graph.shortestPath(trainStartPoint, dest.name).weight || 0
+      distance += graph.shortestPath(currentAt, dest.name).weight || 0
+      currentAt = dest.name
     }
     return distance
   }
@@ -89,14 +90,32 @@ export class Member {
       return actions
     }
 
-    // Swap two random action within the same train and same type
+    // Swap two random action within the same train
     if (Math.random() < mutationRate) {
-      const randomType = _.sample([ActionType.LOAD, ActionType.UNLOAD])
-      const actionA = _.sample(this.actions.filter(action => action.type === randomType))
+      const actionA = _.sample(this.actions)
       if (!actionA) return
-      const actionB = _.find(this.actions, { train: actionA.train, type: randomType === ActionType.LOAD ? ActionType.UNLOAD : ActionType.LOAD, parcel: actionA.parcel })
+      const actionB = _(this.actions).shuffle().find(a => a.train === actionA.train && a.parcel != actionA.parcel)
       if (!actionB) return
       this.actions = swapActions(this.actions, this.actions.indexOf(actionA), this.actions.indexOf(actionB))
+      return
+    }
+
+    // Swap delivery order of two random parcels within the same train
+    if (Math.random() < mutationRate) {
+      const actionA = _.sample(this.actions)
+      if (!actionA) return
+      const actionB = _(this.actions).filter(a => a.train === actionA.train && a.parcel != actionA.parcel).sample()
+      if (!actionB) return
+
+      const loadParcelA = _.find(this.actions, { parcel: actionA.parcel, type: ActionType.LOAD })
+      const loadParcelB = _.find(this.actions, { parcel: actionB.parcel, type: ActionType.LOAD })
+      const unloadParcelA = _.find(this.actions, { parcel: actionA.parcel, type: ActionType.UNLOAD })
+      const unloadParcelB = _.find(this.actions, { parcel: actionB.parcel, type: ActionType.UNLOAD })
+      if (!loadParcelA || !loadParcelB || !unloadParcelA || !unloadParcelB) return
+
+      this.actions = swapActions(this.actions, this.actions.indexOf(loadParcelA), this.actions.indexOf(loadParcelB))
+      this.actions = swapActions(this.actions, this.actions.indexOf(unloadParcelA), this.actions.indexOf(unloadParcelB))
+
       return
     }
   }
