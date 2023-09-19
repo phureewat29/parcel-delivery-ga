@@ -1,6 +1,8 @@
 # Parcel Delivery using Genetic Algorithm
 
-This project provides a solution for solving the train's delivery code challenge. The solution is based on a Genetic Algorithm (GA) which evolves over generations to find the most efficient sequence of actions (LOAD and UNLOAD) for each train, ensuring the parcels reach their destinations with minimal cost.
+This project addresses a complex optimization problem that is closely related to well-known NP-hard problems. It integrates elements from both TSP and VRP, with additional constraints and objectives unique to our domain. 
+
+The solution is based on a Genetic Algorithm (GA) which evolves over generations to find the most efficient sequence of actions for each parcel and train, ensuring the parcels reach their destinations with possible minimal cost.
 
 ![parcel-ga](https://github.com/phureewat29/parcel-delivery-ga/assets/2357480/ad2c5726-32aa-49ba-a6a3-c34a8e1719e3)
 
@@ -103,6 +105,10 @@ The project is structured around the following main components:
 The GA creates populations of solutions (members), and through selection, crossover, and mutation operations, improves the population towards optimal or near-optimal solutions.
 
 ## Installation
+
+### Prerequisites
+Ensure you have [Bun](https://bun.sh/) installed.
+
 ### Install dependencies
 To install project dependencies, use the following command:
 ```
