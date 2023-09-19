@@ -11,31 +11,44 @@ export class Member {
     this.actions = actions
   }
 
-  static generateRandomSolution(possibleActions: Action[], actionsLength: number): Member {
-    const randomActions = _.shuffle(possibleActions).slice(0, actionsLength)
+  static generateRandomSolution(trains: Train[], parcels: Parcel[]): Member {
+    let randomActions: Action[] = []
+    parcels.map(parcel => {
+      const train = _.sample(trains) || trains[0]
+      randomActions.push({ type: ActionType.LOAD, parcel, train })
+      randomActions.push({ type: ActionType.UNLOAD, parcel, train })
+    })
+    randomActions = _.shuffle(randomActions)
     return new Member(randomActions)
   }
 
-  calcSolutionFitness(trains: Train[], graph: any) {
-    let distance = 0;
-    let overload = 0;
+  calcSolutionFitness(trains: Train[], parcels: Parcel[], graph: any) {
+    let distance: number = 0
+    let overload: number = 0
+    let pendingDeliver: string[] = _(parcels).map('name').uniq().value()
+    let delieverd: string[] = []
 
     for (let i = 0; i < trains.length; i++) {
       const train = trains[i]
       const trainActions = this.actions.filter(action => action.train.name === train.name)
       if (trainActions.length === 0) continue
-      distance += Member.calcTrainRouteFitness(trainActions, graph)
-      overload += Member.calcTrainRouteOverload(trainActions, train.capacity)
-    }
+      distance += Member.calcRouteFitness(trainActions, graph)
+      overload += Member.calcRouteOverload(trainActions, train.capacity)
 
+      const deliverByThisTrain = _(trainActions).map('parcel.name').uniq().value()
+      overload += _.intersection(delieverd, deliverByThisTrain).length // penalty for delivering the same parcel twice
+      delieverd = _.union(delieverd, deliverByThisTrain)
+      pendingDeliver = _.difference(pendingDeliver, deliverByThisTrain)
+    }
+    overload += pendingDeliver.length // penalty for not delivering all parcels
     overload *= 1000
     this.distance = distance
     this.overload = overload
     this.fitness = this.distance + this.overload
   }
 
-  static calcTrainRouteFitness(actions: Action[], graph: any): number {
-    let distance = 0
+  static calcRouteFitness(actions: Action[], graph: any): number {
+    let distance: number = 0
     let trainStartPoint = actions[0].train.at.name
 
     for (let i = 0; i < actions.length; i++) {
@@ -48,10 +61,10 @@ export class Member {
   /**
    * Penalty the overload and impossible parcels delivery
    */
-  static calcTrainRouteOverload(actions: Action[], maxCapacity: number): number {
-    let overload = 0
-    let currentWeight = 0;
-    let parcelStorage: string[] = [];
+  static calcRouteOverload(actions: Action[], maxCapacity: number): number {
+    let overload: number = 0
+    let currentWeight: number = 0
+    let parcelStorage: string[] = []
     for (let i = 0; i < actions.length; i++) {
       if (actions[i].type === ActionType.LOAD) {
         currentWeight += actions[i].parcel.weight
@@ -67,7 +80,7 @@ export class Member {
     return overload
   }
 
-  mutate(mutationRate: number, possibleActions: Action[]) {
+  mutate(mutationRate: number,) {
     // Mutatation utils
     const swapActions = (actions: Action[], a: number, b: number) => {
       const temp = actions[b]
@@ -76,33 +89,14 @@ export class Member {
       return actions
     }
 
-    const getRandomIndexes = (max: number): [number, number] => {
-      const indexA = Math.floor(Math.random() * max);
-      let indexB = Math.floor(Math.random() * max);
-      if (indexA === indexB) indexB >= max - 1 ? indexB-- : indexB++;
-      return [indexA, indexB]
-    }
-
-    // Swap with another posible action
+    // Swap two random action within the same train and same type
     if (Math.random() < mutationRate) {
-      const indexA = Math.floor(Math.random() * this.actions.length);
-      this.actions[indexA] = _.find(possibleActions, action => !this.actions.includes(action)) || this.actions[indexA]
-      return
-    }
-
-    // Swap two adjacent points
-    if (Math.random() < mutationRate) {
-      const indexA = Math.floor(Math.random() * this.actions.length);
-      let indexB = indexA + 1;
-      if (indexB >= this.actions.length) indexB = indexA - 1;
-      this.actions = swapActions(this.actions, indexA, indexB)
-      return
-    }
-
-    // Swap two random points (swap mutation)
-    if (Math.random() < mutationRate) {
-      const [indexA, indexB] = getRandomIndexes(this.actions.length);
-      this.actions = swapActions(this.actions, indexA, indexB)
+      const randomType = _.sample([ActionType.LOAD, ActionType.UNLOAD])
+      const actionA = _.sample(this.actions.filter(action => action.type === randomType))
+      if (!actionA) return
+      const actionB = _.find(this.actions, { train: actionA.train, type: randomType === ActionType.LOAD ? ActionType.UNLOAD : ActionType.LOAD, parcel: actionA.parcel })
+      if (!actionB) return
+      this.actions = swapActions(this.actions, this.actions.indexOf(actionA), this.actions.indexOf(actionB))
       return
     }
   }
@@ -111,6 +105,8 @@ export class Member {
    * Print out the moves solution to console
    */
   printSolution(trains: Train[], graph: any) {
+    console.log(`\n\nSOLUTION:`)
+
     _(this.actions).groupBy('train.name').map((actions, trainName) => {
       let currentWeight = 0
       const train = _.find(trains, { name: trainName })
@@ -130,5 +126,7 @@ export class Member {
         console.log(`${isLoad ? 'load' : 'unload'} ${action.parcel.name} weight ${action.parcel.weight} kgs (capacity ${currentWeight}/${train?.capacity} kgs)`)
       })
     }).value()
+
+    console.log(`\nFITNESS SCORE: ${this.fitness}, DISTANCE: ${this.distance}, OVERLOAD: ${this.overload}`)
   }
 }

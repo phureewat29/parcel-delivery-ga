@@ -11,7 +11,6 @@ export class Population {
   mutationRate: number
   generations: number = 0
 
-  // GA Data
   possibleActions: Action[] = [];
   maxGenesLength: number
   trains: Train[]
@@ -38,7 +37,7 @@ export class Population {
     this.generatePossibleActions()
 
     for (let i = 0; i < populationSize; i++) {
-      const randomSolution = Member.generateRandomSolution(this.possibleActions, this.maxGenesLength)
+      const randomSolution = Member.generateRandomSolution(this.trains, this.parcels)
       this.population.push(randomSolution)
     }
   }
@@ -62,7 +61,7 @@ export class Population {
 
   calcAllFitnessValues() {
     for (let i = 0; i < this.population.length; i++) {
-      this.population[i].calcSolutionFitness(this.trains, this.graph)
+      this.population[i].calcSolutionFitness(this.trains, this.parcels, this.graph)
     }
   }
 
@@ -72,10 +71,10 @@ export class Population {
       const parentA = this.tournamentSelection()
       const parentB = this.tournamentSelection()
       let child = this.crossOver(parentA, parentB)
-      child.mutate(this.mutationRate, this.possibleActions)
+      child.mutate(this.mutationRate)
       newPopulation.push(child)
     }
-    this.population = [...newPopulation, ...this.population].sort((memberA, memberB) => memberA.fitness - memberB.fitness).slice(0, this.populationSize)
+    this.population = [...newPopulation]
     this.generations++
   }
 
@@ -88,15 +87,18 @@ export class Population {
     return tournamentPopulation.sort((memberA, memberB) => memberA.fitness - memberB.fitness)[0]
   }
 
+  /**
+   * Cross over two parents genes to create a child
+   * Copy parcel delivery route (genes) from random parent
+   */
   crossOver(parentA: Member, parentB: Member): Member {
-    const point = _.random(2, this.maxGenesLength - 2)
-    let child = parentA.actions.slice(0, point)
-    for (let i = 0; i < parentB.actions.length; i++) {
-      const action = parentB.actions[i]
-      if (!child.includes(action)) child.push(action)
-    }
-    child = child.slice(0, this.maxGenesLength)
-    return new Member(child)
+    const newActions: Action[] = []
+    _(this.parcels).shuffle().value().forEach(parcel => {
+      const parent = _.sample([parentA, parentB])
+      const parcelActions = parent.actions.filter(action => action.parcel.name === parcel.name)
+      newActions.push(...parcelActions)
+    })
+    return new Member(newActions)
   }
 
   getBestMemberOfGeneration(): Member {
