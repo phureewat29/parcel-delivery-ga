@@ -1,8 +1,8 @@
 # Parcel Delivery using Genetic Algorithm
 
-This project addresses a complex optimization problem that is closely related to well-known NP-hard problems. It integrates elements from both TSP and VRP, with additional constraints and objectives unique to our domain.
+This project addresses a complex optimization problem that is closely related to well-known NP-hard problems. It integrates elements from both TSP and (C)VRP, with additional constraints and objectives unique to this domain specific.
 
-The solution is based on a Genetic Algorithm (GA) which evolves over generations to find the most efficient sequence of actions for each parcel and train, ensuring the parcels reach their destinations with possible minimal cost.
+The solution is based on a Genetic Algorithm (GA) which the solution will evolves over generations to find the most efficient delivery route (sequence of actions) for each parcel and train, ensuring the parcels reach their destinations with possible minimal cost.
 
 ![parcel-ga](https://github.com/phureewat29/parcel-delivery-ga/assets/2357480/ad2c5726-32aa-49ba-a6a3-c34a8e1719e3)
 
