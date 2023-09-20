@@ -4,7 +4,7 @@ import { Action, ActionType, Parcel, Train } from "./types";
 export class Member {
   actions: Action[]
   fitness: number = 0
-  overload: number = 0
+  penalty: number = 0
   distance: number = 0
 
   constructor(actions: Action[]) {
@@ -24,7 +24,7 @@ export class Member {
 
   calcSolutionFitness(trains: Train[], parcels: Parcel[], graph: any) {
     let distance: number = 0
-    let overload: number = 0
+    let penalty: number = 0
     let pendingDeliver: string[] = _(parcels).map('name').uniq().value()
     let delieverd: string[] = []
 
@@ -33,18 +33,18 @@ export class Member {
       const trainActions = this.actions.filter(action => action.train.name === train.name)
       if (trainActions.length === 0) continue
       distance += Member.calcRouteFitness(trainActions, graph)
-      overload += Member.calcRouteOverload(trainActions, train.capacity)
+      penalty += Member.calcRouteOverload(trainActions, train.capacity)
 
       const deliverByThisTrain = _(trainActions).map('parcel.name').uniq().value()
-      overload += _.intersection(delieverd, deliverByThisTrain).length // penalty for delivering the same parcel twice
+      penalty += _.intersection(delieverd, deliverByThisTrain).length // penalty for delivering the same parcel twice
       delieverd = _.union(delieverd, deliverByThisTrain)
       pendingDeliver = _.difference(pendingDeliver, deliverByThisTrain)
     }
-    overload += pendingDeliver.length // penalty for not delivering all parcels
-    overload *= 1000
+    penalty += pendingDeliver.length // penalty for not delivering all parcels
+    penalty *= 1000
     this.distance = distance
-    this.overload = overload
-    this.fitness = this.distance + this.overload
+    this.penalty = penalty
+    this.fitness = this.distance + this.penalty
   }
 
   static calcRouteFitness(actions: Action[], graph: any): number {
@@ -118,6 +118,11 @@ export class Member {
 
       return
     }
+
+    // Shuffle genese
+    if (Math.random() < mutationRate) {
+      this.actions = _.shuffle(this.actions)
+    }
   }
 
   /**
@@ -146,6 +151,6 @@ export class Member {
       })
     }).value()
 
-    console.log(`\nFITNESS SCORE: ${this.fitness}, DISTANCE: ${this.distance}, OVERLOAD: ${this.overload}`)
+    console.log(`\nFITNESS SCORE: ${this.fitness}, TOTAL DISTANCE: ${this.distance}, PENALTY: ${this.penalty}`)
   }
 }
