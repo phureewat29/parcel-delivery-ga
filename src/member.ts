@@ -26,7 +26,7 @@ export class Member {
     let distance: number = 0
     let penalty: number = 0
     let pendingDeliver: string[] = _(parcels).map('name').uniq().value()
-    let delieverd: string[] = []
+    let delivered: string[] = []
 
     for (let i = 0; i < trains.length; i++) {
       const train = trains[i]
@@ -36,8 +36,8 @@ export class Member {
       penalty += Member.calcRouteOverload(trainActions, train.capacity)
 
       const deliverByThisTrain = _(trainActions).map('parcel.name').uniq().value()
-      penalty += _.intersection(delieverd, deliverByThisTrain).length // penalty for delivering the same parcel twice
-      delieverd = _.union(delieverd, deliverByThisTrain)
+      penalty += _.intersection(delivered, deliverByThisTrain).length // penalty for delivering the same parcel twice
+      delivered = _.union(delivered, deliverByThisTrain)
       pendingDeliver = _.difference(pendingDeliver, deliverByThisTrain)
     }
     penalty += pendingDeliver.length // penalty for not delivering all parcels
